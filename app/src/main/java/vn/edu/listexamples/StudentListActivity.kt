@@ -31,7 +31,7 @@ class StudentListActivity : AppCompatActivity() {
     adapter = StudentAdapter(students, object: StudentAdapter.ButtonClickListener{
       override fun onButtonClicked(position: Int) {
         students.removeAt(position)
-        adapter.notifyDataSetChanged()
+        adapter.notifyItemRemoved(position)
       }
     })
 
@@ -44,10 +44,15 @@ class StudentListActivity : AppCompatActivity() {
     editHoten = findViewById(R.id.editHoten)
 
     button_add.setOnClickListener({
-      if (editMSSV.text.toString() != "" && editHoten.text.toString() != ""){
-        students.add(StudentModel(editHoten.text.toString(), editMSSV.text.toString()))
-        adapter.notifyDataSetChanged()
+      val name = editHoten.text.toString()
+      val mssv = editMSSV.text.toString()
+      if (name.isNotEmpty() && mssv.isNotEmpty()) {
+        students.add(0, StudentModel(name, mssv))
+        adapter.notifyItemInserted(0)
+        recyclerView.scrollToPosition(0)
 
+        editHoten.text.clear()
+        editMSSV.text.clear()
       }
     })
 
